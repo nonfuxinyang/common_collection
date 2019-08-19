@@ -21,6 +21,14 @@
 
 
     <dependencies>
+        <!--core-->
+        <dependency>
+            <groupId>com.zgd.base</groupId>
+            <artifactId>core-common</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+        <!--spring-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -44,6 +52,17 @@
             <artifactId>hibernate-validator</artifactId>
             <version>6.0.17.Final</version>
         </dependency>
+
+        <!--http-->
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+        </dependency>
+
     </dependencies>
 
     <dependencyManagement>
