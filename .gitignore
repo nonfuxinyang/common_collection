@@ -20,6 +20,7 @@ gen
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
+target
 
 # Package Files #
 *.jar
@@ -33,11 +34,3 @@ gen
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 
-springboot-common/src/
-springboot-common/target/classes/
-springboot-common/target/maven-archiver/
-springboot-common/target/maven-status/
-util-common/target/classes/log4j.properties
-util-common/target/generated-sources/
-util-common/target/maven-archiver/
-util-common/target/maven-status/
