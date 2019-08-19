@@ -3,7 +3,6 @@ package com.zgd.base.util.qrcode;
 
 import com.google.zxing.client.j2se.MatrixToImageConfig;
 import com.google.zxing.common.BitMatrix;
-import com.zgd.base.util.qrcode.config.LogoConfig;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
