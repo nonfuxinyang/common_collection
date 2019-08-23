@@ -1,6 +1,9 @@
 package com.zgd.base.util;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.RandomUtils;
+
+import java.util.Calendar;
 
 /**
  * Test
@@ -12,13 +15,21 @@ import lombok.extern.slf4j.Slf4j;
 public class Test {
 
   @org.junit.Test
-  public void fun01(){
+  public void fun01() throws InterruptedException {
     log.trace("............trace........");
     log.debug("............debug........");
-    log.info("............info........");
-    log.warn("............warn........");
-    log.error("............error........");
-    String property = System.getProperty("user.dir");
-    System.out.println("property = " + property);
+    long l = System.currentTimeMillis();
+    while (true){
+      Thread.sleep(RandomUtils.nextInt(100,150));
+      log.info("............info........");
+      log.warn("............warn........");
+      log.error("............error........");
+      if (System.currentTimeMillis() - l > 60000){
+        System.exit(0);
+      }
+    }
+//    String property = System.getProperty("user.dir");
+//    System.out.println("property = " + property);
   }
+
 }
