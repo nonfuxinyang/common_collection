@@ -3,8 +3,6 @@ package com.zgd.base.util;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomUtils;
 
-import java.util.Calendar;
-
 /**
  * Test
  *
@@ -28,8 +26,5 @@ public class Test {
         System.exit(0);
       }
     }
-//    String property = System.getProperty("user.dir");
-//    System.out.println("property = " + property);
   }
-
 }

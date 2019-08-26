@@ -16,6 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Pattern;
 
+import com.google.common.collect.Lists;
 import org.apache.log4j.FileAppender;
 import org.apache.log4j.Layout;
 import org.apache.log4j.helpers.CountingQuietWriter;
@@ -437,13 +438,26 @@ public class Log4JDateAndSizeAppender extends FileAppender {
         return;
       }
       //判断是否超出最大文件数
-      if (files.length > maxTotalFile){
-        Arrays.sort(files, (o1, o2) -> (int) (o1.lastModified() - o2.lastModified()));
-        for (int i = 0; i < files.length; i++) {
-          if (files.length - maxTotalFile > i){
-            LogLog.debug("delete old file :" + files[i].getName());
-            files[i].delete();
-          }
+      if (files.length > maxTotalFile) {
+        List<File> tlt = Arrays.asList(files);
+        ArrayList<File> list = new ArrayList<>(tlt);
+
+        list.sort((o1, o2) -> (int) (o1.lastModified() - o2.lastModified()));
+        Iterator<File> iterator = list.iterator();
+        int i = 0;
+        int size = list.size();
+//        synchronized (this) {
+          while (iterator.hasNext()) {
+            File next = iterator.next();
+            if (size - maxTotalFile > i) {
+              LogLog.debug("delete old file :" + files[i].getName());
+              next.delete();
+              iterator.remove();
+              i++;
+            } else {
+              return;
+            }
+//          }
         }
       }
     }
