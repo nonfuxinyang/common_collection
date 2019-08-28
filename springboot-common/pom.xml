@@ -26,18 +26,19 @@
             <groupId>com.zgd.base</groupId>
             <artifactId>core-common</artifactId>
             <version>1.0.0</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>slf4j-log4j12</artifactId>
+                    <groupId>org.slf4j</groupId>
+                </exclusion>
+            </exclusions>
+
         </dependency>
 
         <!--spring-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-logging</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -61,7 +62,6 @@
             <artifactId>hibernate-validator</artifactId>
             <version>6.0.17.Final</version>
         </dependency>
-
         <!--http-->
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
@@ -83,4 +83,5 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
 </project>
