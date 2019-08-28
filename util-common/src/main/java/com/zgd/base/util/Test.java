@@ -16,15 +16,15 @@ public class Test {
   public void fun01() throws InterruptedException {
     log.trace("............trace........");
     log.debug("............debug........");
-    long l = System.currentTimeMillis();
-    while (true){
-      Thread.sleep(RandomUtils.nextInt(100,150));
+//    long l = System.currentTimeMillis();
+//    while (true){
+//      Thread.sleep(RandomUtils.nextInt(100,150));
       log.info("............info........");
       log.warn("............warn........");
       log.error("............error........");
-      if (System.currentTimeMillis() - l > 60000){
-        System.exit(0);
-      }
-    }
+//      if (System.currentTimeMillis() - l > 60000){
+//        System.exit(0);
+//      }
+//    }
   }
 }
