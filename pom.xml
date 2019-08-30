@@ -12,6 +12,7 @@
         <module>springboot-common</module>
         <module>util-common</module>
         <module>core-common</module>
+        <module>restful-common</module>
     </modules>
 
     <properties>
