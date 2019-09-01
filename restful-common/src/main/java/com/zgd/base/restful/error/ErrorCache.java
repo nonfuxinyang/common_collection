@@ -3,8 +3,10 @@ package com.zgd.base.restful.error;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
+import com.google.common.base.Objects;
 import com.zgd.base.restful.util.FileUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
@@ -39,9 +41,10 @@ public class ErrorCache {
    * @return
    */
   public static String getMsg(String code) {
-    return Optional.ofNullable(errorCodeCache)
-            .map(cache -> cache.get(code))
-            .map(ErrorDto::getMsg).get();
+    if (errorCodeCache != null && errorCodeCache.get(code) != null){
+      return errorCodeCache.get(code).getMsg();
+    }
+    return null;
   }
 
 
@@ -52,13 +55,14 @@ public class ErrorCache {
    * @return
    */
   public static String getInternalMsg(String code) {
-    Optional<ErrorDto> errorDto = Optional.ofNullable(errorCodeCache)
-            .map(cache -> cache.get(code));
-    if (errorDto.isPresent()) {
-      String innerMsg = errorDto.get().getInnerMsg();
-      return StringUtils.isNotBlank(innerMsg) ? innerMsg : errorDto.get().getMsg();
+    if (errorCodeCache != null && errorCodeCache.get(code) != null){
+      return errorCodeCache.get(code).getInnerMsg();
     }
     return null;
+  }
+
+  public static void main(String[] args) {
+    getMsg("1");
   }
 }
 
