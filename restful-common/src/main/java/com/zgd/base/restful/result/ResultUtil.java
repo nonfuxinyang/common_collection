@@ -59,6 +59,15 @@ public class ResultUtil {
     return failure(errCode,null,null);
   }
 
+  /**
+   * 返回失败result
+   * @param <T>
+   * @return
+   */
+  public static <T>  Result<T> failureOnlyMsg(String errMsg){
+    return failure(null,errMsg,null);
+  }
+
 
 
   /**
@@ -92,18 +101,17 @@ public class ResultUtil {
    * @date 2019/7/17 18:28
    */
   private static <T> Result<T> getFailResult(String errCode, String errMsg, T data) {
-    if (StringUtils.isNoneEmpty(errCode)){
-      if (StringUtils.isEmpty(errMsg)){
+    if (StringUtils.isNotEmpty(errCode) && StringUtils.isEmpty(errMsg)){
         //获取msg
         errMsg = ErrorCache.getMsg(errCode) ;
         if (StringUtils.isEmpty(errMsg)){
-          log.info("[获取错误码] 未能获取错误信息 errCode：{}",errCode);
+          log.warn("[获取错误码] 未能获取错误信息 errCode：{}",errCode);
           errMsg = BASE_ERROR_MSG;
-        }
       }
-    }else {
-      errCode = BASE_ERROR_CODE;
-      errMsg = BASE_ERROR_MSG;
+    }
+    else{
+      errCode = StringUtils.isEmpty(errCode) ? BASE_ERROR_CODE : errCode;
+      errMsg = StringUtils.isEmpty(errMsg) ? BASE_ERROR_MSG : errMsg;
     }
     return new Result<>(FAILURE_CODE, errCode, errMsg, data);
   }

@@ -25,8 +25,10 @@ public class ErrorCache {
 
   static {
     String s = FileUtil.readResourceFile(ERROR_JSON_PATH);
-    errorCodeCache = JSON.parseObject(s, new TypeReference<HashMap<String, ErrorDto>>() {
-    });
+    if (StringUtils.isNoneBlank(s)) {
+      errorCodeCache = JSON.parseObject(s, new TypeReference<HashMap<String, ErrorDto>>() {
+      });
+    }
   }
 
 

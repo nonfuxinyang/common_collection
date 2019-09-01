@@ -30,7 +30,7 @@ public class FileUtil {
       }
 
     } catch (Exception e) {
-      log.debug("[读取文件失败] ", e);
+      log.error("[读取文件失败] ", e);
     }
     return sb.toString();
   }
