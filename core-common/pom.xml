@@ -33,7 +33,6 @@
             <artifactId>slf4j-log4j12</artifactId>
             <optional>true</optional>
             <scope>compile</scope>
-            <scope>compile</scope>
 e         </dependency>
         <!--工具包-->
         <dependency>
