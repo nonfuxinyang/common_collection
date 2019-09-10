@@ -19,7 +19,8 @@ gen
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
-
+logs
+log
 # Package Files #
 *.jar
 *.war
