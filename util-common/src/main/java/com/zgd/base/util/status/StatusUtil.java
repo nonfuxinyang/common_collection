@@ -139,39 +139,35 @@ public class StatusUtil {
 
     @Override
     public String toString() {
-      return "ClientStatus{\n"
-          + "host='"
-          + host
-          + '\''
-          + ", ipAddress='"
-          + ipAddress
-          + '\''
-          + ",\n usedMemory="
-          + usedMemory
-          + "M , freeMemory="
-          + freeMemory
-          + "M , totalMemory="
-          + totalMemory
-          + "M , maxMemory="
-          + maxMemory
-          + "M ,\n osName='"
-          + osName
-          + '\''
-          + ", 线程pid="
-          + pid
-          + ", threadCount="
-          + threadCount
-          + ",\n 启动时间startTime="
-          + DateFormatUtils.ISO_8601_EXTENDED_DATETIME_FORMAT.format(startTime)
-          + ", 运行时间runtime="
-          + formatDuring(runtime)
-          + ",\n classPath='"
-          + classPath
-          + '\''
-          + ", projectPath='"
-          + projectPath
-          + '\''
-          + "\n}";
+      String sb = "{" +
+              "host=" +
+              host +
+              ", ipAddress=" +
+              ipAddress +
+              ", usedMemory=" +
+              usedMemory +
+              "M , freeMemory=" +
+              freeMemory +
+              "M , totalMemory=" +
+              totalMemory +
+              "M , maxMemory=" +
+              maxMemory +
+              "M ,\n osName=" +
+              osName +
+              ", 线程pid=" +
+              pid +
+              ", threadCount=" +
+              threadCount +
+              ", 启动时间startTime=" +
+              DateFormatUtils.ISO_8601_EXTENDED_DATETIME_FORMAT.format(startTime) +
+              ", 运行时间runtime=" +
+              formatDuring(runtime) +
+              ", classPath=" +
+              classPath +
+              ", projectPath=" +
+              projectPath +
+              "}";
+      return sb;
     }
 
     /**
