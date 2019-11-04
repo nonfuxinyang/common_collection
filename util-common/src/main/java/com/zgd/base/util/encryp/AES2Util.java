@@ -125,19 +125,19 @@ public class AES2Util {
      * @throws Exception
      */
     public static void main(String[] args) throws Exception {
-//      String s = encrypt("hello world hello world hello world hello world");
-//      System.out.println("s = " + s);
-//      String s1 = decrypt(s);
-//      System.out.println("s1 = " + s1);
+      String s = encrypt("hello world hello world hello world hello world");
+      System.out.println("s = " + s);
+      String s1 = decrypt("lF5neibK+Ay3w/quApysnJrLzCtntyNVGkQDhEtotvklZbf+OVtnDb5+DqUsvtGa");
+      System.out.println("s1 = " + s1);
 
-      Instant now = Instant.now();
-      for (int i = 0; i < 10000; i++) {
-        String s = encrypt("hello world hello world hello world hello world");
-        System.out.println("s = " + s);
-        String s1 = decrypt(s);
-        System.out.println("s1 = " + s1);
-      }
-      System.out.println("耗时 :" +(ChronoUnit.MILLIS.between(now,Instant.now())));
+//      Instant now = Instant.now();
+//      for (int i = 0; i < 10000; i++) {
+//        String s = encrypt("hello world hello world hello world hello world");
+//        System.out.println("s = " + s);
+//        String s1 = decrypt(s);
+//        System.out.println("s1 = " + s1);
+//      }
+//      System.out.println("耗时 :" +(ChronoUnit.MILLIS.between(now,Instant.now())));
 
     }
 }

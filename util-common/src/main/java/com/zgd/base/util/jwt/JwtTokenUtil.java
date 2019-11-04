@@ -34,7 +34,7 @@ public class JwtTokenUtil {
   /**
    * 密钥key
    */
-  private static String SECRET_KEY = "zgd";
+  private static String SECRET_KEY = "zgd123456zhang5";
 
 
   /**
@@ -79,7 +79,7 @@ public class JwtTokenUtil {
       key = privateKey;
     } else {
       algorithm = SignatureAlgorithm.HS256;
-      key = AESUtil.generalKey(SECRET_KEY);
+      key = AESUtil.getNormalKey(SECRET_KEY);
     }
 
     Date nowDate = new Date();
@@ -158,7 +158,7 @@ public class JwtTokenUtil {
       //RSA
       key = publicKey;
     } else {
-      key = AESUtil.generalKey(SECRET_KEY);
+      key = AESUtil.getNormalKey(SECRET_KEY);
     }
     try {
       return Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody();
