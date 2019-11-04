@@ -157,14 +157,12 @@ public class AESUtil {
   }
 
 
-
-
   /**
    * 根据种子生成一个安全随机数,作为加密秘钥
    *
    * @return
    */
-  private static SecretKeySpec getRandomKeyBySeed(final String seed)  {
+  public static SecretKeySpec getRandomKeyBySeed(final String seed)  {
     //返回生成指定算法密钥生成器的 KeyGenerator 对象
     KeyGenerator kg;
     try {
@@ -185,7 +183,6 @@ public class AESUtil {
     } catch (NoSuchAlgorithmException | UnsupportedEncodingException ex) {
       log.error("[AESUtil] [getSecretKey] 异常:", ex);
     }
-
     return null;
   }
 
@@ -205,6 +202,42 @@ public class AESUtil {
     return new SecretKeySpec(bytes, "AES");
   }
 
+
+  public static String encrypt2Base64ByNormalKey(String content,String secretKey){
+    SecretKey key = getNormalKey(secretKey);
+    return encryptToBase64(content, key);
+  }
+
+  public static String encrypt2Base64ByRandom(String content,String seed){
+    SecretKey key = getRandomKeyBySeed(seed);
+    return encryptToBase64(content, key);
+  }
+  public static String decryptBase64ByNormalKey(String content,String secretKey){
+    SecretKey key = getNormalKey(secretKey);
+    return decryptFromBase64(content, key);
+  }
+  public static String decryptBase64ByRandom(String content,String seed){
+    SecretKey key = getRandomKeyBySeed(seed);
+    return decryptFromBase64(content, key);
+  }
+
+  public static String encrypt2HEXByNormalKey(String content,String secretKey){
+    SecretKey key = getNormalKey(secretKey);
+    return encryptToHEX(content, key);
+  }
+
+  public static String encrypt2HEXByRandom(String content,String seed){
+    SecretKey key = getRandomKeyBySeed(seed);
+    return encryptToHEX(content, key);
+  }
+  public static String decryptHEXByNormalKey(String content,String secretKey){
+    SecretKey key = getNormalKey(secretKey);
+    return decryptFromHEX(content, key);
+  }
+  public static String decryptHEXByRandom(String content,String seed){
+    SecretKey key = getRandomKeyBySeed(seed);
+    return decryptFromHEX(content, key);
+  }
 
   public static void main(String[] args) {
     String c = "hello world hello world hello world hello world";
