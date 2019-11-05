@@ -12,10 +12,10 @@
     <jmxConfigurator/>
 
     <!-- 定义日志文件 输出位置 -->
-    <property name="log.home_dir" value="${user.dir}/logs"/>
+    <property name="log.home_dir" value="./logs"/>
 
     <!-- 日志最大的历史 30天 -->
-    <property name="log.maxHistory" value="30"/>
+    <property name="log.maxHistory" value="90"/>
 
     <property name="log.level" value="info"/>
     <property name="log.maxSize" value="100MB" />
@@ -48,7 +48,7 @@
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <!--日志输出位置 可相对、和绝对路径 -->
             <fileNamePattern>
-                ${log.home_dir}/error/%d{yyyy-MM-dd}/error-%i.log
+                ${log.home_dir}/error/error-%d{yyyyMMdd}-%i.log
             </fileNamePattern>
             <!-- 可选节点，控制保留的归档文件的最大数量，超出数量就删除旧文件,假设设置每个月滚动，且<maxHistory>是6，
             则只保存最近6个月的文件，删除之前的旧文件。注意，删除旧文件是，那些为了归档而创建的目录也会被删除 -->
@@ -66,28 +66,28 @@
 
 
     <!-- WARN级别日志 appender -->
-   <!-- <appender name="WARN" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        &lt;!&ndash; 过滤器，只记录WARN级别的日志 &ndash;&gt;
-        &lt;!&ndash; 果日志级别等于配置级别，过滤器会根据onMath 和 onMismatch接收或拒绝日志。 &ndash;&gt;
+    <appender name="WARN" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 过滤器，只记录WARN级别的日志 -->
+        <!-- 果日志级别等于配置级别，过滤器会根据onMath 和 onMismatch接收或拒绝日志。 -->
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
-            &lt;!&ndash; 设置过滤级别 &ndash;&gt;
+            <!-- 设置过滤级别 -->
             <level>WARN</level>
-            &lt;!&ndash; 用于配置符合过滤条件的操作 &ndash;&gt;
+            <!-- 用于配置符合过滤条件的操作 -->
             <onMatch>ACCEPT</onMatch>
-            &lt;!&ndash; 用于配置不符合过滤条件的操作 &ndash;&gt;
+            <!-- 用于配置不符合过滤条件的操作 -->
             <onMismatch>DENY</onMismatch>
         </filter>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            &lt;!&ndash;日志输出位置 可相对、和绝对路径 &ndash;&gt;
-            <fileNamePattern>${log.home_dir}/warn/%d{yyyy-MM-dd}/warn-%i.log</fileNamePattern>
+            <!--日志输出位置 可相对、和绝对路径 -->
+            <fileNamePattern>${log.home_dir}/warn/warn-%d{yyyyMMdd}-%i.log</fileNamePattern>
             <maxHistory>${log.maxHistory}</maxHistory>
-            &lt;!&ndash;当天的日志大小 超过MaxFileSize时,压缩日志并保存&ndash;&gt;
+            <!--当天的日志大小 超过MaxFileSize时,压缩日志并保存-->
             <MaxFileSize>${log.maxSize}</MaxFileSize>
         </rollingPolicy>
         <encoder>
             <pattern>${log.pattern}</pattern>
         </encoder>
-    </appender>-->
+    </appender>
 
 
     <!-- INFO级别日志 appender -->
@@ -97,7 +97,7 @@
             <onMatch>ACCEPT</onMatch>
         </filter>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>${log.home_dir}/info/%d{yyyy-MM-dd}/info-%i.log</fileNamePattern>
+            <fileNamePattern>${log.home_dir}/info/info-%d{yyyyMMdd}-%i.log</fileNamePattern>
             <maxHistory>${log.maxHistory}</maxHistory>
             <MaxFileSize>${log.maxSize}</MaxFileSize>
         </rollingPolicy>
@@ -115,7 +115,7 @@
             <onMismatch>DENY</onMismatch>
         </filter>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>${log.home_dir}/debug/%d{yyyy-MM-dd}/debug-%i.log</fileNamePattern>
+            <fileNamePattern>${log.home_dir}/debug/debug-%d{yyyyMMdd}-%i.log</fileNamePattern>
             <maxHistory>${log.maxHistory}</maxHistory>
             <MaxFileSize>${log.maxSize}</MaxFileSize>
         </rollingPolicy>
