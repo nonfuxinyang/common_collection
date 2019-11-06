@@ -235,7 +235,7 @@ public class JwtTokenUtil {
     Claims claims = parseToken(sign);
     System.out.println("getClaims= " + JSON.toJSONString(claims));
     System.out.println("getClaims= " + claims.getSubject());
-    System.out.println("getClaims= " + claims.getExpiration().toLocaleString());
+    System.out.println("getClaims= " + claims.getExpiration().toString());
     System.out.println("name = " + claims.get("name"));
 
   }
