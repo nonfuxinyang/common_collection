@@ -240,22 +240,25 @@ public class AESUtil {
   }
 
   public static void main(String[] args) {
-    String c = "hello world hello world hello world hello world";
-    SecretKeySpec randomKeyBySeed = getRandomKeyBySeed("123");
-    String s2 = encryptToBase64(c, randomKeyBySeed);
-    System.out.println("s2 = " + s2);
-    System.out.println("decryptFromBase64(s2,randomKeyBySeed) = " + decryptFromBase64(s2, randomKeyBySeed));
-    String s3 = encryptToHEX(c, randomKeyBySeed);
-    System.out.println("s3 = " + s3);
-    System.out.println("decryptFromHEX(s3,randomKeyBySeed) = " + decryptFromHEX(s3, randomKeyBySeed));
-
-    SecretKey normalKey = getNormalKey("1234567887654321");
-    String s4 = encryptToBase64(c, normalKey);
-    System.out.println("s4 = " + s4);
-    System.out.println("decryptFromBase64(s4,randomKeyBySeed) = " + decryptFromBase64(s4, normalKey));
-    String s5 = encryptToHEX(c, normalKey);
-    System.out.println("s5 = " + s5);
-    System.out.println("decryptFromHEX(s4,randomKeyBySeed) = " + decryptFromHEX(s5, normalKey));
+//    String c = "hello world hello world hello world hello world";
+//    SecretKeySpec randomKeyBySeed = getRandomKeyBySeed("123");
+//    String s2 = encryptToBase64(c, randomKeyBySeed);
+//    System.out.println("s2 = " + s2);
+//    System.out.println("decryptFromBase64(s2,randomKeyBySeed) = " + decryptFromBase64(s2, randomKeyBySeed));
+//    String s3 = encryptToHEX(c, randomKeyBySeed);
+//    System.out.println("s3 = " + s3);
+//    System.out.println("decryptFromHEX(s3,randomKeyBySeed) = " + decryptFromHEX(s3, randomKeyBySeed));
+//
+//    SecretKey normalKey = getNormalKey("1234567887654321");
+//    String s4 = encryptToBase64(c, normalKey);
+//    System.out.println("s4 = " + s4);
+//    System.out.println("decryptFromBase64(s4,randomKeyBySeed) = " + decryptFromBase64(s4, normalKey));
+//    String s5 = encryptToHEX(c, normalKey);
+//    System.out.println("s5 = " + s5);
+//    System.out.println("decryptFromHEX(s4,randomKeyBySeed) = " + decryptFromHEX(s5, normalKey));
+    String key = "qwer2019yeahka11";
+    String database = encryptToBase64("database", getNormalKey(key));
+    System.out.println("database = " + database);
 
 
 //    Instant now = Instant.now();
@@ -266,4 +269,8 @@ public class AESUtil {
 //    }
 //    System.out.println("耗时: " +(ChronoUnit.MILLIS.between(now,Instant.now())));
   }
+
+
+
+
 }
