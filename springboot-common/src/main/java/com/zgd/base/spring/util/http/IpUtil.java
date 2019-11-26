@@ -1,5 +1,7 @@
 package com.zgd.base.spring.util.http;
 
+import org.apache.commons.lang3.StringUtils;
+
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -50,7 +52,7 @@ public class IpUtil {
   }
 
   public static String getIpLocation(String ip) {
-    //只能支持少量低频次调用,做了限流,循环100条只有前6次成功,后面都是限流失败,4631ms
+    //只能支持少量低频次调用,做了限流,循环100条只有前6次成功,后面都是限流失败,4631ms/100条,但是比ws126要准确
     String taobaoApi = "http://ip.taobao.com/service/getIpInfo.php?ip=" + ip;
     //已经关闭
     String sinaApi = "http://int.dpool.sina.com.cn/iplookup/iplookup.php?format=js&ip=" + ip;
@@ -69,9 +71,16 @@ public class IpUtil {
     String ipapi = "https://ipapi.co/" + ip + "/json";
     HttpResult httpResult = HttpClientUtil.get(ws126Api);
     if (HttpClientUtil.is200OK(httpResult)) {
-      return httpResult.getRespStr();
+      String respStr = httpResult.getRespStr();
+      if (StringUtils.isNotEmpty(respStr)){
+        return respStr.substring(respStr.lastIndexOf("{city"));
+      }
     }
     return "无法确定";
   }
 
+
+  public static void main(String[] args) {
+    System.out.println(getIpLocation("218.17.161.140"));
+  }
 }

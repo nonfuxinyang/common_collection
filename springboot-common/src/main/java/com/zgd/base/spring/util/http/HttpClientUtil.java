@@ -64,12 +64,12 @@ public class HttpClientUtil {
         uriBuilder.setParameters(params);
       }
       get = new HttpGet(uriBuilder.build());
-      log.info("请求的参数 url: {}\treq: {}", get.getURI(), params);
+      log.debug("请求的参数 url: {}\treq: {}", get.getURI(), params);
 
       HttpResponse response = httpClient.execute(get);
       String resp = EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8);
       int code = response.getStatusLine().getStatusCode();
-      log.info("返回的信息 resp: {}", resp);
+      log.debug("返回的信息 resp: {}", resp);
       return new HttpResult(code, resp);
     } catch (Exception e) {
       log.warn("请求异常 --  error!", e);
@@ -118,7 +118,7 @@ public class HttpClientUtil {
    * @return
    */
   public static HttpResult postRequest(String url, String mediaType, HttpEntity entity) {
-    log.info("[postRequest] resourceUrl: {}", url);
+    log.debug("[postRequest] resourceUrl: {}", url);
     HttpPost post = null;
     try {
       URIBuilder uriBuilder = new URIBuilder(url);
@@ -128,7 +128,7 @@ public class HttpClientUtil {
       HttpResponse response = httpClient.execute(post);
       String resp = EntityUtils.toString(response.getEntity());
       int code = response.getStatusLine().getStatusCode();
-      log.info("返回的信息 resp：{}", resp);
+      log.debug("返回的信息 resp：{}", resp);
       return new HttpResult(code, resp);
     } catch (Exception e) {
       log.warn("请求异常 --  error!", e);
