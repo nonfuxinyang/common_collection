@@ -1,6 +1,7 @@
 package com.zgd.base.spring.config;
 
 import com.alibaba.fastjson.JSON;
+import com.zgd.base.spring.util.http.HttpClientUtil;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.Header;
@@ -68,7 +69,13 @@ public class HttpClientConfig {
   public RestTemplate restTemplate() {
     return new RestTemplate();
   }
-
+  /**
+   * 初始化RestTemplate,并加入spring的Bean工厂，由spring统一管理
+   */
+  @Bean(name = "httpClientTemplate")
+  public RestTemplate restTemplate(ClientHttpRequestFactory factory) {
+    return createRestTemplate(factory);
+  }
 
   /**
    * 创建HTTP客户端工厂
@@ -94,13 +101,7 @@ public class HttpClientConfig {
     return clientHttpRequestFactory;
   }
 
-  /**
-   * 初始化RestTemplate,并加入spring的Bean工厂，由spring统一管理
-   */
-  @Bean(name = "httpClientTemplate")
-  public RestTemplate restTemplate(ClientHttpRequestFactory factory) {
-    return createRestTemplate(factory);
-  }
+
 
   /**
    * 初始化支持异步的RestTemplate,并加入spring的Bean工厂，由spring统一管理,如果你用不到异步，则无须创建该对象
@@ -148,7 +149,7 @@ public class HttpClientConfig {
       httpClientBuilder.setRetryHandler(new DefaultHttpRequestRetryHandler(httpClientPoolProperties.getRetryTimes(), true));
 
       //设置默认请求头
-      List<Header> headers = getDefaultHeaders();
+      List<Header> headers = HttpClientUtil.getDefaultHeaders();
       httpClientBuilder.setDefaultHeaders(headers);
       //设置长连接保持策略
       httpClientBuilder.setKeepAliveStrategy(connectionKeepAliveStrategy());
@@ -177,8 +178,8 @@ public class HttpClientConfig {
         if (value != null && "timeout".equalsIgnoreCase(param)) {
           try {
             return Long.parseLong(value) * 1000;
-          } catch(NumberFormatException ignore) {
-            log.error("解析长连接过期时间异常",ignore);
+          } catch(NumberFormatException e) {
+            log.error("解析长连接过期时间异常",e);
           }
         }
       }
@@ -195,20 +196,6 @@ public class HttpClientConfig {
 
 
 
-  /**
-   * 设置请求头
-   *
-   * @return
-   */
-  private List<Header> getDefaultHeaders() {
-    List<Header> headers = new ArrayList<>();
-    headers.add(new BasicHeader("User-Agent",
-            "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.16 Safari/537.36"));
-    headers.add(new BasicHeader("Accept-Encoding", "gzip,deflate"));
-    headers.add(new BasicHeader("Accept-Language", "zh-CN"));
-    headers.add(new BasicHeader("Connection", "Keep-Alive"));
-    return headers;
-  }
 
 
   private RestTemplate createRestTemplate(ClientHttpRequestFactory factory) {
