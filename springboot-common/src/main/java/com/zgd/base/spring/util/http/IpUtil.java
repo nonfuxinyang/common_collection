@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class IpUtil {
 
-  public static String getIpAdrress(HttpServletRequest request) {
+  public static String getIp(HttpServletRequest request) {
     String ip = null;
 
     //X-Forwarded-For：Squid 服务代理
@@ -43,6 +43,10 @@ public class IpUtil {
       ip = request.getRemoteAddr();
     }
     return ip;
+  }
+
+  public static String getIpLocation(HttpServletRequest request) {
+    return getIpLocation(getIp(request));
   }
 
   public static String getIpLocation(String ip) {
