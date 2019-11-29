@@ -12,7 +12,7 @@ import org.apache.commons.lang3.RandomUtils;
 @Slf4j
 public class Test {
 
-  @org.junit.Test
+  @org.testng.annotations.Test
   public void fun01() throws InterruptedException {
     log.trace("............trace........");
     log.debug("............debug........");
