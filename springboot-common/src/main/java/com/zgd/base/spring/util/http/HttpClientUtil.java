@@ -1,8 +1,5 @@
 package com.zgd.base.spring.util.http;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.http.*;
 import org.apache.http.client.HttpClient;
@@ -16,6 +13,8 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 
 import java.nio.charset.StandardCharsets;
@@ -30,15 +29,13 @@ import java.util.stream.Collectors;
  * @author zgd
  * @date 2019/8/13 15:46
  */
-@Slf4j
 public class HttpClientUtil {
 
-
-
+  private static Logger log = LoggerFactory.getLogger(HttpClientUtil.class);
 
 
   public static HttpResult get(HttpClient client, String url) {
-    return get(client,url, null);
+    return get(client, url, null);
   }
 
   /**
@@ -50,8 +47,8 @@ public class HttpClientUtil {
    */
   public static HttpResult get(HttpClient client, String url, List<NameValuePair> params) {
     HttpGet get = null;
+    long s = System.currentTimeMillis();
     try {
-
       URIBuilder uriBuilder = new URIBuilder(url);
       uriBuilder.setCharset(StandardCharsets.UTF_8);
       if (CollectionUtils.isNotEmpty(params)) {
@@ -68,11 +65,12 @@ public class HttpClientUtil {
     } catch (Exception e) {
       log.warn("请求异常 --  error!", e);
     } finally {
+      log.info("请求:-- {} --耗时 {} ms", url, System.currentTimeMillis() - s);
       if (get != null) {
         get.releaseConnection();
       }
     }
-    return null;
+    return new HttpResult().error();
   }
 
   /**
@@ -86,7 +84,7 @@ public class HttpClientUtil {
     List<BasicNameValuePair> params = form.entrySet().stream().map(en -> new BasicNameValuePair(en.getKey(), en.getValue()))
             .collect(Collectors.toList());
     HttpEntity entity = new UrlEncodedFormEntity(params, StandardCharsets.UTF_8);
-    return postRequest(client,url, MediaType.APPLICATION_FORM_URLENCODED_VALUE, entity);
+    return postRequest(client, url, MediaType.APPLICATION_FORM_URLENCODED_VALUE, entity);
   }
 
 
@@ -99,7 +97,7 @@ public class HttpClientUtil {
    */
   public static HttpResult postJSON(HttpClient client, String url, String json) {
     StringEntity entity = new StringEntity(json, StandardCharsets.UTF_8);
-    return postRequest(client,url, MediaType.APPLICATION_JSON_VALUE, entity);
+    return postRequest(client, url, MediaType.APPLICATION_JSON_VALUE, entity);
   }
 
 
@@ -113,6 +111,7 @@ public class HttpClientUtil {
    */
   public static HttpResult postRequest(HttpClient client, String url, String mediaType, HttpEntity entity) {
     log.debug("[postRequest] resourceUrl: {}", url);
+    long s = System.currentTimeMillis();
     HttpPost post = null;
     try {
       URIBuilder uriBuilder = new URIBuilder(url);
@@ -127,38 +126,39 @@ public class HttpClientUtil {
     } catch (Exception e) {
       log.warn("请求异常 --  error!", e);
     } finally {
+      log.info("请求:-- {} --耗时 {} ms", url, System.currentTimeMillis() - s);
       if (post != null) {
         post.releaseConnection();
       }
     }
-    return null;
+    return new HttpResult().error();
   }
 
 
-  public static boolean is200OK(HttpResult result) {
-    return result != null && result.getCode() == HttpStatus.SC_OK;
-  }
 
-
-  public static String getValue(HttpResult result, String key) {
-    if (is200OK(result)) {
-      try {
-        JSONObject jsonObject = JSON.parseObject(result.getRespStr());
-        return jsonObject.getString(key);
-      } catch (Exception e) {
-        log.warn("解析失败 ", e);
-      }
-    }
-    return null;
-  }
-
-  public static HttpClient getHttpClient(RequestConfig requestConfig){
+  /**
+   * 获取客户端
+   *
+   * @param connTimeoutMills    建立连接的超时时间
+   * @param getConnTimeoutMills 从连接池获取连接的超时时间
+   * @param readTimeoutMills    客户端从服务器读取数据的超时时间
+   * @return
+   */
+  public static HttpClient getHttpClient(int connTimeoutMills, int getConnTimeoutMills, int readTimeoutMills) {
+    RequestConfig requestConfig = RequestConfig.custom()
+            //建立连接的超时时间
+            .setConnectTimeout(connTimeoutMills)
+            //指从连接池获取连接的timeout
+            .setConnectionRequestTimeout(getConnTimeoutMills)
+            //客户端从服务器读取数据的timeout
+            .setSocketTimeout(readTimeoutMills).build();
     return HttpClientBuilder.create().setDefaultRequestConfig(requestConfig)
             .setMaxConnTotal(1000)
             .setMaxConnPerRoute(100)
             .setDefaultHeaders(getDefaultHeaders())
             .build();
   }
+
   /**
    * 获取默认的httpClient
    *
@@ -166,8 +166,11 @@ public class HttpClientUtil {
    */
   public static HttpClient getHttpClient() {
     RequestConfig requestConfig = RequestConfig.custom()
+            //建立连接的超时时间
             .setConnectTimeout(3000)
+            //指从连接池获取连接的timeout
             .setConnectionRequestTimeout(3000)
+            //客户端从服务器读取数据的timeout
             .setSocketTimeout(5000).build();
     return HttpClientBuilder.create().setDefaultRequestConfig(requestConfig)
             .setMaxConnTotal(1000)
