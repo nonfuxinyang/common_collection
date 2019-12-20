@@ -44,10 +44,7 @@ import java.nio.charset.Charset;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * @Author: zgd
@@ -178,16 +175,16 @@ public class HttpClientConfig {
         if (value != null && "timeout".equalsIgnoreCase(param)) {
           try {
             return Long.parseLong(value) * 1000;
-          } catch(NumberFormatException e) {
-            log.error("解析长连接过期时间异常",e);
+          } catch (NumberFormatException e) {
+            log.error("解析长连接过期时间异常", e);
           }
         }
       }
       HttpHost target = (HttpHost) context.getAttribute(
               HttpClientContext.HTTP_TARGET_HOST);
-      //如果请求目标地址,单独配置了长连接保持时间,使用该配置
-      Optional<Map.Entry<String, Integer>> any = httpClientPoolProperties.getKeepAliveTargetHost().entrySet().stream().filter(
-              e -> e.getKey().equalsIgnoreCase(target.getHostName())).findAny();
+      Optional<Map.Entry<String, Integer>> any = Optional.ofNullable(httpClientPoolProperties.getKeepAliveTargetHost()).orElseGet(HashMap::new)
+              .entrySet().stream().filter(
+                      e -> e.getKey().equalsIgnoreCase(target.getHostName())).findAny();
       //否则使用默认长连接保持时间
       return any.map(en -> en.getValue() * 1000L).orElse(httpClientPoolProperties.getKeepAliveTime() * 1000L);
     };
