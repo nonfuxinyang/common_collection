@@ -2,10 +2,8 @@ package com.zgd.base.spring.util.http;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import io.swagger.models.Scheme;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.http.*;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
@@ -13,7 +11,6 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicHeader;
@@ -21,7 +18,6 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.springframework.http.MediaType;
 
-import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,14 +33,12 @@ import java.util.stream.Collectors;
 @Slf4j
 public class HttpClientUtil {
 
-  private static HttpClient httpClient;
 
-  public static HttpResult get(String url) {
-    return get(url, null);
-  }
 
-  static {
-    getHttpClient();
+
+
+  public static HttpResult get(HttpClient client, String url) {
+    return get(client,url, null);
   }
 
   /**
@@ -54,7 +48,7 @@ public class HttpClientUtil {
    * @author zgd
    * @date 2019/8/13 15:52
    */
-  public static HttpResult get(String url, List<NameValuePair> params) {
+  public static HttpResult get(HttpClient client, String url, List<NameValuePair> params) {
     HttpGet get = null;
     try {
 
@@ -66,7 +60,7 @@ public class HttpClientUtil {
       get = new HttpGet(uriBuilder.build());
       log.debug("请求的参数 url: {}\treq: {}", get.getURI(), params);
 
-      HttpResponse response = httpClient.execute(get);
+      HttpResponse response = client.execute(get);
       String resp = EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8);
       int code = response.getStatusLine().getStatusCode();
       log.debug("返回的信息 resp: {}", resp);
@@ -88,11 +82,11 @@ public class HttpClientUtil {
    * @author zgd
    * @date 2019/8/13 15:56
    */
-  public static HttpResult postForm(String url, HashMap<String, String> form) {
+  public static HttpResult postForm(HttpClient client, String url, HashMap<String, String> form) {
     List<BasicNameValuePair> params = form.entrySet().stream().map(en -> new BasicNameValuePair(en.getKey(), en.getValue()))
             .collect(Collectors.toList());
     HttpEntity entity = new UrlEncodedFormEntity(params, StandardCharsets.UTF_8);
-    return postRequest(url, MediaType.APPLICATION_FORM_URLENCODED_VALUE, entity);
+    return postRequest(client,url, MediaType.APPLICATION_FORM_URLENCODED_VALUE, entity);
   }
 
 
@@ -103,9 +97,9 @@ public class HttpClientUtil {
    * @author zgd
    * @date 2019/8/13 15:56
    */
-  public static HttpResult postJSON(String url, String json) {
+  public static HttpResult postJSON(HttpClient client, String url, String json) {
     StringEntity entity = new StringEntity(json, StandardCharsets.UTF_8);
-    return postRequest(url, MediaType.APPLICATION_JSON_VALUE, entity);
+    return postRequest(client,url, MediaType.APPLICATION_JSON_VALUE, entity);
   }
 
 
@@ -117,7 +111,7 @@ public class HttpClientUtil {
    * @param entity
    * @return
    */
-  public static HttpResult postRequest(String url, String mediaType, HttpEntity entity) {
+  public static HttpResult postRequest(HttpClient client, String url, String mediaType, HttpEntity entity) {
     log.debug("[postRequest] resourceUrl: {}", url);
     HttpPost post = null;
     try {
@@ -125,7 +119,7 @@ public class HttpClientUtil {
       post = new HttpPost(uriBuilder.build());
       post.addHeader(HttpHeaders.CONTENT_TYPE, mediaType);
       post.setEntity(entity);
-      HttpResponse response = httpClient.execute(post);
+      HttpResponse response = client.execute(post);
       String resp = EntityUtils.toString(response.getEntity());
       int code = response.getStatusLine().getStatusCode();
       log.debug("返回的信息 resp：{}", resp);
@@ -158,25 +152,28 @@ public class HttpClientUtil {
     return null;
   }
 
-
+  public static HttpClient getHttpClient(RequestConfig requestConfig){
+    return HttpClientBuilder.create().setDefaultRequestConfig(requestConfig)
+            .setMaxConnTotal(1000)
+            .setMaxConnPerRoute(100)
+            .setDefaultHeaders(getDefaultHeaders())
+            .build();
+  }
   /**
    * 获取默认的httpClient
    *
    * @return
    */
   public static HttpClient getHttpClient() {
-    if (httpClient == null) {
-      RequestConfig requestConfig = RequestConfig.custom()
-              .setConnectTimeout(3000)
-              .setConnectionRequestTimeout(3000)
-              .setSocketTimeout(5000).build();
-      httpClient = HttpClientBuilder.create().setDefaultRequestConfig(requestConfig)
-              .setMaxConnTotal(1000)
-              .setMaxConnPerRoute(100)
-              .setDefaultHeaders(getDefaultHeaders())
-              .build();
-    }
-    return httpClient;
+    RequestConfig requestConfig = RequestConfig.custom()
+            .setConnectTimeout(3000)
+            .setConnectionRequestTimeout(3000)
+            .setSocketTimeout(5000).build();
+    return HttpClientBuilder.create().setDefaultRequestConfig(requestConfig)
+            .setMaxConnTotal(1000)
+            .setMaxConnPerRoute(100)
+            .setDefaultHeaders(getDefaultHeaders())
+            .build();
   }
 
 
