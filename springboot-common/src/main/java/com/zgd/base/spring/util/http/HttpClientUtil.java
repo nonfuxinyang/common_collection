@@ -1,6 +1,7 @@
 package com.zgd.base.spring.util.http;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.http.*;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
@@ -19,9 +20,8 @@ import org.springframework.http.MediaType;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 /**
  * HttpClientUtil
@@ -48,6 +48,7 @@ public class HttpClientUtil {
   public static HttpResult get(HttpClient client, String url, List<NameValuePair> params) {
     HttpGet get = null;
     long s = System.currentTimeMillis();
+    HttpResult result = new HttpResult();
     try {
       URIBuilder uriBuilder = new URIBuilder(url);
       uriBuilder.setCharset(StandardCharsets.UTF_8);
@@ -64,13 +65,14 @@ public class HttpClientUtil {
       return new HttpResult(code, resp);
     } catch (Exception e) {
       log.warn("请求异常 --  error!", e);
+      result.error().setErrMsg(e.getMessage());
     } finally {
       log.info("请求:-- {} --耗时 {} ms", url, System.currentTimeMillis() - s);
       if (get != null) {
         get.releaseConnection();
       }
     }
-    return new HttpResult().error();
+    return result;
   }
 
   /**
@@ -80,11 +82,29 @@ public class HttpClientUtil {
    * @author zgd
    * @date 2019/8/13 15:56
    */
-  public static HttpResult postForm(HttpClient client, String url, HashMap<String, String> form) {
-    List<BasicNameValuePair> params = form.entrySet().stream().map(en -> new BasicNameValuePair(en.getKey(), en.getValue()))
-            .collect(Collectors.toList());
+  public static HttpResult postForm(HttpClient client, String url, Map<String, String> form) {
+    List<BasicNameValuePair> params = new ArrayList<>();
+    for (Map.Entry<String, String> en : form.entrySet()) {
+      params.add(new BasicNameValuePair(en.getKey(), en.getValue()));
+    }
     HttpEntity entity = new UrlEncodedFormEntity(params, StandardCharsets.UTF_8);
-    return postRequest(client, url, MediaType.APPLICATION_FORM_URLENCODED_VALUE, entity);
+    return postRequest(client, url,null, MediaType.APPLICATION_FORM_URLENCODED_VALUE, entity);
+  }
+
+  /**
+   * 发送POST请求（普通表单形式）
+   *
+   * @return java.lang.String
+   * @author zgd
+   * @date 2019/8/13 15:56
+   */
+  public static HttpResult postForm(HttpClient client, String url, Map<String, String> header, Map<String, String> form) {
+    List<BasicNameValuePair> params = new ArrayList<>();
+    for (Map.Entry<String, String> en : form.entrySet()) {
+      params.add(new BasicNameValuePair(en.getKey(), en.getValue()));
+    }
+    HttpEntity entity = new UrlEncodedFormEntity(params, StandardCharsets.UTF_8);
+    return postRequest(client, url,header, MediaType.APPLICATION_FORM_URLENCODED_VALUE, entity);
   }
 
 
@@ -95,9 +115,21 @@ public class HttpClientUtil {
    * @author zgd
    * @date 2019/8/13 15:56
    */
+  public static HttpResult postJSON(HttpClient client, String url, Map<String, String> header, String json) {
+    StringEntity entity = new StringEntity(json, StandardCharsets.UTF_8);
+    return postRequest(client, url,header, MediaType.APPLICATION_JSON_VALUE, entity);
+  }
+
+  /**
+   * 发送POST请求（JSON形式）
+   *
+   * @return java.lang.String
+   * @author zgd
+   * @date 2019/8/13 15:56
+   */
   public static HttpResult postJSON(HttpClient client, String url, String json) {
     StringEntity entity = new StringEntity(json, StandardCharsets.UTF_8);
-    return postRequest(client, url, MediaType.APPLICATION_JSON_VALUE, entity);
+    return postRequest(client, url,null, MediaType.APPLICATION_JSON_VALUE, entity);
   }
 
 
@@ -109,29 +141,36 @@ public class HttpClientUtil {
    * @param entity
    * @return
    */
-  public static HttpResult postRequest(HttpClient client, String url, String mediaType, HttpEntity entity) {
+  public static HttpResult postRequest(HttpClient client, String url, Map<String, String> header, String mediaType, HttpEntity entity) {
     log.debug("[postRequest] resourceUrl: {}", url);
     long s = System.currentTimeMillis();
     HttpPost post = null;
+    HttpResult httpResult = new HttpResult();
     try {
       URIBuilder uriBuilder = new URIBuilder(url);
       post = new HttpPost(uriBuilder.build());
       post.addHeader(HttpHeaders.CONTENT_TYPE, mediaType);
+      if (MapUtils.isNotEmpty(header)){
+        for (Map.Entry<String, String> entry : MapUtils.iterableMap(header).entrySet()) {
+          post.addHeader(entry.getKey(),entry.getValue());
+        }
+      }
       post.setEntity(entity);
       HttpResponse response = client.execute(post);
       String resp = EntityUtils.toString(response.getEntity());
       int code = response.getStatusLine().getStatusCode();
       log.debug("返回的信息 resp：{}", resp);
       return new HttpResult(code, resp);
-    } catch (Exception e) {
-      log.warn("请求异常 --  error!", e);
+    }catch (Exception e) {
+      log.warn("请求异常 --  error", e);
+      httpResult.error().setErrMsg(e.getMessage());
     } finally {
       log.info("请求:-- {} --耗时 {} ms", url, System.currentTimeMillis() - s);
       if (post != null) {
         post.releaseConnection();
       }
     }
-    return new HttpResult().error();
+    return httpResult;
   }
 
 

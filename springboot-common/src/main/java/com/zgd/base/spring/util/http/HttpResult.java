@@ -15,6 +15,7 @@ public class HttpResult {
 
   private int code;
   private String respStr;
+  private String errMsg;
 
   private boolean isError = false;
 
@@ -42,17 +43,21 @@ public class HttpResult {
   public HttpResult() {
   }
 
-  public HttpResult error(){
+  public HttpResult error() {
     this.isError = true;
     return this;
   }
 
 
   public boolean is200OK() {
-    return  this.getCode() == HttpStatus.SC_OK;
+    return this.getCode() == HttpStatus.SC_OK;
   }
 
-  public  String getValue( String key) {
+  public boolean isOk() {
+    return !this.isError;
+  }
+
+  public String getValue(String key) {
     if (is200OK()) {
       try {
         JSONObject jsonObject = JSON.parseObject(getRespStr());
@@ -62,5 +67,24 @@ public class HttpResult {
       }
     }
     return "";
+  }
+
+
+  public String getErrMsg() {
+    return errMsg;
+  }
+
+  public void setErrMsg(String errMsg) {
+    this.errMsg = errMsg;
+  }
+
+  @Override
+  public String toString() {
+    return "HttpResult{" +
+            "code=" + code +
+            ", respStr='" + respStr + '\'' +
+            ", errMsg='" + errMsg + '\'' +
+            ", isError=" + isError +
+            '}';
   }
 }
