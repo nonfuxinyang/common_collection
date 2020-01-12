@@ -1,6 +1,7 @@
 package com.zgd.base.spring.util.http;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.client.HttpClient;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -9,8 +10,11 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class IpUtil {
 
+  private static final HttpClient client = HttpClientUtil.getHttpClient();
+
   public static String getIp(HttpServletRequest request) {
     String ip = null;
+
 
     //X-Forwarded-For：Squid 服务代理
     String ipAddresses = request.getHeader("X-Forwarded-For");
@@ -69,10 +73,10 @@ public class IpUtil {
     String ip_Api = "http://ip-api.com/json/?ip=" + ip;
     //一个月3w条免费, 100条耗时 37394ms
     String ipapi = "https://ipapi.co/" + ip + "/json";
-    HttpResult httpResult = HttpClientUtil.get(ws126Api);
-    if (HttpClientUtil.is200OK(httpResult)) {
+    HttpResult httpResult = HttpClientUtil.get(client,ws126Api);
+    if (httpResult.is200OK()) {
       String respStr = httpResult.getRespStr();
-      if (StringUtils.isNotEmpty(respStr)){
+      if (StringUtils.isNotEmpty(respStr)) {
         return respStr.substring(respStr.lastIndexOf("{city"));
       }
     }
