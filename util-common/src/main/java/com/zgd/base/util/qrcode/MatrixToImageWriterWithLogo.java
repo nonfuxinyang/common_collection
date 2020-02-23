@@ -8,12 +8,16 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URL;
 import java.nio.file.Path;
 
 /**
  * 模仿Google的MatrixToImageWriter自己编写的类
+ *
  * @author zgd
  * @date 18/09/14 17:53
  */
@@ -25,13 +29,13 @@ public class MatrixToImageWriterWithLogo {
   private MatrixToImageWriterWithLogo() {
   }
 
-  public static BufferedImage toBufferedImage(BitMatrix matrix,MatrixToImageConfig config) {
+  public static BufferedImage toBufferedImage(BitMatrix matrix, MatrixToImageConfig config) {
     int width = matrix.getWidth();
     int height = matrix.getHeight();
     BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
     for (int x = 0; x < width; x++) {
       for (int y = 0; y < height; y++) {
-              image.setRGB(x, y,  (matrix.get(x, y) ? config.getPixelOnColor() : config.getPixelOffColor()));
+        image.setRGB(x, y, (matrix.get(x, y) ? config.getPixelOnColor() : config.getPixelOffColor()));
       }
     }
     return image;
@@ -39,36 +43,41 @@ public class MatrixToImageWriterWithLogo {
 
   public static void writeToPath(BitMatrix matrix, String format, Path path, Path logoPath) throws IOException {
     OutputStream os = new FileOutputStream(path.toFile());
-    writeToStream(matrix,format,os,logoPath,config);
+    writeToStream(matrix, format, os, logoPath, config);
   }
 
 
   public static void writeToPath(BitMatrix matrix, String format, Path path, Path logoPath, MatrixToImageConfig config) throws IOException {
     OutputStream os = new FileOutputStream(path.toFile());
-    writeToStream(matrix,format,os,logoPath,config);
+    writeToStream(matrix, format, os, logoPath, config);
   }
 
   public static void writeToPath(BitMatrix matrix, String format, Path path, URL logoUrl) throws IOException {
     OutputStream os = new FileOutputStream(path.toFile());
-    writeToStream(matrix,format,os,logoUrl,config);
+    writeToStream(matrix, format, os, logoUrl, config);
   }
 
-  public static void writeToPath(BitMatrix matrix, String format, Path path, URL logoUrl,MatrixToImageConfig config) throws IOException {
+  public static void writeToPath(BitMatrix matrix, String format, Path path, URL logoUrl, MatrixToImageConfig config) throws IOException {
     OutputStream os = new FileOutputStream(path.toFile());
-    writeToStream(matrix,format,os,logoUrl,config);
+    writeToStream(matrix, format, os, logoUrl, config);
+  }
+
+  public static void writeToPath(BitMatrix matrix, String format, Path path, byte[] logoUrl, MatrixToImageConfig config) throws IOException {
+    OutputStream os = new FileOutputStream(path.toFile());
+    writeToStream(matrix, format, os, logoUrl, config);
   }
 
 
   public static void writeToStream(BitMatrix matrix, String format, OutputStream stream, Path logoPath) throws IOException {
-    writeToStream(matrix, format, stream, logoPath,config);
+    writeToStream(matrix, format, stream, logoPath, config);
   }
 
 
-  public static void writeToStream(BitMatrix matrix, String format, OutputStream stream, Path logoPath,MatrixToImageConfig config) throws IOException {
-    BufferedImage image = toBufferedImage(matrix,config);
+  public static void writeToStream(BitMatrix matrix, String format, OutputStream stream, Path logoPath, MatrixToImageConfig config) throws IOException {
+    BufferedImage image = toBufferedImage(matrix, config);
     //设置logo图标
     BufferedImage bi = ImageIO.read(logoPath.toFile());
-    image = logoMatrix(image,bi);
+    image = logoMatrix(image, bi);
 
     if (!ImageIO.write(image, format, stream)) {
       throw new IOException("Could not write an image of format " + format);
@@ -76,15 +85,26 @@ public class MatrixToImageWriterWithLogo {
   }
 
   public static void writeToStream(BitMatrix matrix, String format, OutputStream stream, URL logoUrl) throws IOException {
-    writeToStream(matrix,format,stream,logoUrl,config);
+    writeToStream(matrix, format, stream, logoUrl, config);
   }
 
 
-  public static void writeToStream(BitMatrix matrix, String format, OutputStream stream, URL logoUrl,MatrixToImageConfig config) throws IOException {
-    BufferedImage image = toBufferedImage(matrix,config);
+  public static void writeToStream(BitMatrix matrix, String format, OutputStream stream, URL logoUrl, MatrixToImageConfig config) throws IOException {
+    BufferedImage image = toBufferedImage(matrix, config);
     //设置logo图标
     BufferedImage bi = ImageIO.read(logoUrl);
-    image = logoMatrix(image,bi);
+    image = logoMatrix(image, bi);
+
+    if (!ImageIO.write(image, format, stream)) {
+      throw new IOException("Could not write an image of format " + format);
+    }
+  }
+
+  public static void writeToStream(BitMatrix matrix, String format, OutputStream stream, byte[] logoUrl, MatrixToImageConfig config) throws IOException {
+    BufferedImage image = toBufferedImage(matrix, config);
+    //设置logo图标
+    BufferedImage bi = ImageIO.read(new ByteArrayInputStream(logoUrl));
+    image = logoMatrix(image, bi);
 
     if (!ImageIO.write(image, format, stream)) {
       throw new IOException("Could not write an image of format " + format);
@@ -94,6 +114,7 @@ public class MatrixToImageWriterWithLogo {
 
   /**
    * 设置 logo
+   *
    * @param matrixImage 源二维码图片
    * @return 返回带有logo的二维码图片
    * @author Administrator sangwenhao
