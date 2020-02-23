@@ -21,7 +21,7 @@
         <password>guihub登录的用户密码</password>
     </server>
 ```
-2.点击idea右边maven插件中的plugins-site(github那个)
+2.mvn clean deploy
 
 
 #### 3.2 其他项目使用
