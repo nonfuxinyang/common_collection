@@ -1,4 +1,4 @@
-package com.zgd.base.spring.util.http;
+package com.zgd.base.util.http;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
@@ -16,7 +16,6 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.MediaType;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -32,7 +31,8 @@ import java.util.Map;
 public class HttpClientUtil {
 
   private static Logger log = LoggerFactory.getLogger(HttpClientUtil.class);
-
+  public static final String APPLICATION_FORM_URLENCODED_VALUE = "application/x-www-form-urlencoded";
+  public static final String APPLICATION_JSON_VALUE = "application/json";
 
   public static HttpResult get(HttpClient client, String url) {
     return get(client, url, null);
@@ -88,7 +88,7 @@ public class HttpClientUtil {
       params.add(new BasicNameValuePair(en.getKey(), en.getValue()));
     }
     HttpEntity entity = new UrlEncodedFormEntity(params, StandardCharsets.UTF_8);
-    return postRequest(client, url,null, MediaType.APPLICATION_FORM_URLENCODED_VALUE, entity);
+    return postRequest(client, url,null, APPLICATION_FORM_URLENCODED_VALUE, entity);
   }
 
   /**
@@ -104,7 +104,7 @@ public class HttpClientUtil {
       params.add(new BasicNameValuePair(en.getKey(), en.getValue()));
     }
     HttpEntity entity = new UrlEncodedFormEntity(params, StandardCharsets.UTF_8);
-    return postRequest(client, url,header, MediaType.APPLICATION_FORM_URLENCODED_VALUE, entity);
+    return postRequest(client, url,header, APPLICATION_FORM_URLENCODED_VALUE, entity);
   }
 
 
@@ -117,7 +117,7 @@ public class HttpClientUtil {
    */
   public static HttpResult postJSON(HttpClient client, String url, Map<String, String> header, String json) {
     StringEntity entity = new StringEntity(json, StandardCharsets.UTF_8);
-    return postRequest(client, url,header, MediaType.APPLICATION_JSON_VALUE, entity);
+    return postRequest(client, url,header, APPLICATION_JSON_VALUE, entity);
   }
 
   /**
@@ -129,7 +129,7 @@ public class HttpClientUtil {
    */
   public static HttpResult postJSON(HttpClient client, String url, String json) {
     StringEntity entity = new StringEntity(json, StandardCharsets.UTF_8);
-    return postRequest(client, url,null, MediaType.APPLICATION_JSON_VALUE, entity);
+    return postRequest(client, url,null, APPLICATION_JSON_VALUE, entity);
   }
 
 

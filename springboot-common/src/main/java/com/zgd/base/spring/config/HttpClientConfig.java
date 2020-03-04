@@ -1,7 +1,7 @@
 package com.zgd.base.spring.config;
 
 import com.alibaba.fastjson.JSON;
-import com.zgd.base.spring.util.http.HttpClientUtil;
+import com.zgd.base.util.http.HttpClientUtil;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.Header;

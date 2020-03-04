@@ -1,5 +1,7 @@
-package com.zgd.base.spring.util.http;
+package com.zgd.base.restful.util;
 
+import com.zgd.base.util.http.HttpClientUtil;
+import com.zgd.base.util.http.HttpResult;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.HttpClient;
 
